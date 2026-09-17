@@ -1,0 +1,596 @@
+{
+  "info": {
+    "_postman_id": "89b7d341-cf12-4a7b-a45e-998811223344",
+    "name": "Changelog & Product Updates Hub API",
+    "description": "Comprehensive Postman collection for testing the Changelog Hub backend API, including dual JWT rotation, admin publishing studio, public timeline, emoji reactions, and unread notification center.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminAccessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "verificationToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "resetToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "changelogId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "changelogSlug",
+      "value": "ai-powered-smart-search-and-semantic-filters",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication & Security",
+      "item": [
+        {
+          "name": "Signup New User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sarah Engineer\",\n  \"email\": \"sarah@example.com\",\n  \"password\": \"SecurePass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/signup",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "signup"]
+            }
+          }
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify-email/{{verificationToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "verify-email", "{{verificationToken}}"]
+            }
+          }
+        },
+        {
+          "name": "Login as Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var data = pm.response.json();",
+                  "    pm.collectionVariables.set('adminAccessToken', data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"AdminPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login as Regular User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var data = pm.response.json();",
+                  "    pm.collectionVariables.set('accessToken', data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"UserPass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token (Rotation)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User Profile (Me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "forgot-password"]
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"BrandNewPassword2026!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password/{{resetToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "reset-password", "{{resetToken}}"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Public Changelog & Feeds",
+      "item": [
+        {
+          "name": "Get Public Changelog Timeline",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/changelog?category=All&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["changelog"],
+              "query": [
+                { "key": "category", "value": "All" },
+                { "key": "q", "value": "", "disabled": true },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Changelog with Query",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/changelog?q=semantic",
+              "host": ["{{baseUrl}}"],
+              "path": ["changelog"],
+              "query": [
+                { "key": "q", "value": "semantic" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Single Changelog by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/changelog/{{changelogSlug}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["changelog", "{{changelogSlug}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Public JSON Feed for Widgets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/changelog/feed?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["changelog", "feed"],
+              "query": [
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Emoji Reactions",
+      "item": [
+        {
+          "name": "Toggle Reaction (Heart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emoji\": \"❤️\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/changelog/{{changelogId}}/react",
+              "host": ["{{baseUrl}}"],
+              "path": ["changelog", "{{changelogId}}", "react"]
+            }
+          }
+        },
+        {
+          "name": "Toggle Reaction (Rocket)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emoji\": \"🚀\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/changelog/{{changelogId}}/react",
+              "host": ["{{baseUrl}}"],
+              "path": ["changelog", "{{changelogId}}", "react"]
+            }
+          }
+        },
+        {
+          "name": "Get Reactions for Entry",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/changelog/{{changelogId}}/reactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["changelog", "{{changelogId}}", "reactions"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. \"What's New\" Notifications",
+      "item": [
+        {
+          "name": "Get Unread Updates Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/unread-count",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "unread-count"]
+            }
+          }
+        },
+        {
+          "name": "Mark All Updates as Read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/mark-read",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "mark-read"]
+            }
+          }
+        },
+        {
+          "name": "Get Recent Updates for Drawer Preview",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/recent?limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "recent"],
+              "query": [
+                { "key": "limit", "value": "5" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Admin Publishing Studio (Protected)",
+      "item": [
+        {
+          "name": "List All Entries (Draft + Published)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/changelog?status=All&category=All",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "changelog"],
+              "query": [
+                { "key": "status", "value": "All" },
+                { "key": "category", "value": "All" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Changelog Entry (Draft)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Dark Mode Theme & Accessibility Enhancements\",\n  \"slug\": \"dark-mode-theme-accessibility-enhancements\",\n  \"contentMarkdown\": \"### Dark Mode is Finally Here!\\n\\nEnjoy high-contrast dark mode tailored for late-night coding.\\n\\n- Seamless system preference detection\\n- Accessible WCAG AAA contrast ratios\",\n  \"category\": \"New\",\n  \"status\": \"Draft\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/changelog",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "changelog"]
+            }
+          }
+        },
+        {
+          "name": "Get Changelog Entry by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/changelog/{{changelogId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "changelog", "{{changelogId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Changelog Entry",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Dark Mode Theme & High Contrast Colors\",\n  \"category\": \"Improved\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/changelog/{{changelogId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "changelog", "{{changelogId}}"]
+            }
+          }
+        },
+        {
+          "name": "Toggle / Set Publish Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Published\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/changelog/{{changelogId}}/publish",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "changelog", "{{changelogId}}", "publish"]
+            }
+          }
+        },
+        {
+          "name": "Delete Changelog Entry",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/changelog/{{changelogId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "changelog", "{{changelogId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Cover Image Upload",
+      "item": [
+        {
+          "name": "Upload Cover Image (Multer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "coverImage",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upload/cover",
+              "host": ["{{baseUrl}}"],
+              "path": ["upload", "cover"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

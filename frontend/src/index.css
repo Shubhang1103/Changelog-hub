@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-paper text-ink font-sans min-h-screen overflow-x-hidden;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f7f7f4;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #c8c8c1;
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #5c6270;
+  }
+}
+
+/* Markdown Rendering Custom Styles */
+.markdown-body {
+  @apply text-ink-soft leading-relaxed space-y-4;
+}
+
+.markdown-body h1 {
+  @apply text-2xl sm:text-3xl font-semibold text-ink tracking-tight mt-6 mb-3 border-b border-line pb-2;
+}
+
+.markdown-body h2 {
+  @apply text-xl sm:text-2xl font-semibold text-ink tracking-tight mt-5 mb-2;
+}
+
+.markdown-body h3 {
+  @apply text-lg sm:text-xl font-semibold text-ink mt-4 mb-2;
+}
+
+.markdown-body h4 {
+  @apply text-base font-semibold text-ink mt-3 mb-1;
+}
+
+.markdown-body p {
+  @apply leading-relaxed my-2;
+}
+
+.markdown-body ul {
+  @apply list-disc list-inside space-y-1 my-2 pl-2;
+}
+
+.markdown-body ol {
+  @apply list-decimal list-inside space-y-1 my-2 pl-2;
+}
+
+.markdown-body li {
+  @apply text-ink-soft;
+}
+
+.markdown-body a {
+  @apply text-accent hover:text-ink underline underline-offset-2 transition-colors;
+}
+
+.markdown-body blockquote {
+  @apply border-l-4 border-accent bg-accent-soft px-4 py-2 my-3 rounded-r-lg text-ink-soft italic;
+}
+
+.markdown-body code:not(pre code) {
+  @apply bg-accent-soft text-accent px-1.5 py-0.5 rounded font-mono text-sm font-medium border border-line;
+}
+
+.markdown-body pre {
+  @apply bg-ink text-paper p-4 rounded-lg overflow-x-auto font-mono text-sm my-4 border border-ink shadow-inner;
+}
+
+.markdown-body table {
+  @apply w-full text-left border-collapse my-4 border border-line text-sm;
+}
+
+.markdown-body th {
+  @apply bg-accent-soft px-4 py-2.5 font-semibold text-ink border-b border-line;
+}
+
+.markdown-body td {
+  @apply px-4 py-2 border-b border-line text-ink-soft;
+}
+
+.markdown-body tr:nth-child(even) {
+  @apply bg-white/50;
+}
+
+.markdown-body img {
+  @apply rounded-lg max-w-full h-auto my-4 border border-line shadow-md;
+}
+
+.markdown-body hr {
+  @apply border-line my-6;
+}
